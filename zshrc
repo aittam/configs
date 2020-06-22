@@ -158,3 +158,13 @@ function terraformrolemfa() {
 alias k=kubectl
 source <(kubectl completion zsh)
 echo 'complete -F __start_kubectl k'
+
+load-tfswitch() {
+  local tfswitchrc_path=".tfswitchrc"
+
+  if [ -f "$tfswitchrc_path" ]; then
+    tfswitch
+  fi
+}
+add-zsh-hook chpwd load-tfswitch
+load-tfswitch
