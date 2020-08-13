@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 if [[ `uname` == "Darwin" ]]; then
@@ -76,6 +76,9 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 
+HISTSIZE=100000000000
+SAVEHIST=10000000000
+
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
@@ -84,7 +87,7 @@ setopt HIST_VERIFY               # Don't execute immediately upon history expans
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git docker docker-compose)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -139,6 +142,47 @@ function setup_aws_credentials() {
         export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_DEFAULT_REGION AWS_PROFILE
     else
         export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_PROFILE
+    fi
+}
+
+function setup_aws_credentials_sso() {
+    sso_start_url=flowing.awsapps.com
+    profile_name=$1
+    echo $profile_name
+    role_name=$(aws configure get sso_role_name --profile $profile_name)
+    region=$(aws configure get region --profile $profile_name)
+    account_id=$(aws configure get sso_account_id --profile $profile_name)
+    access_token=$(cat `grep -rl ~/.aws/sso/cache/ -e $sso_start_url` |jq -r .accessToken)
+    local stscredentials
+    stscredentials=$(aws sso get-role-credentials \
+      --profile $profile_name \
+      --role-name $role_name \
+      --account-id $account_id \
+      --region $region \
+      --access-token $access_token)
+    credential_res=$?
+    AWS_ACCESS_KEY_ID=$(echo "${stscredentials}" | jq -r .roleCredentials.accessKeyId)
+    AWS_SECRET_ACCESS_KEY=$(echo "${stscredentials}" | jq -r .roleCredentials.secretAccessKey)
+    AWS_SESSION_TOKEN=$(echo "${stscredentials}" | jq -r .roleCredentials.sessionToken)
+    AWS_PROFILE=$1
+    AWS_DEFAULT_REGION=$region
+    export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_DEFAULT_REGION AWS_PROFILE
+    return $credential_res
+}
+
+function terraformsso() {
+    if [ -z "$AWS_PROFILE" ]
+    then
+      echo "please define the environment variable AWS_PROFILE bofore running this"
+      return
+    fi
+    if [ $(aws configure list-profiles |grep -Ec "^$AWS_PROFILE$") -eq 1 ]
+    then
+        setup_aws_credentials_sso $AWS_PROFILE && echo "SSO credentilas ok" || (echo "Authentication Failed; Did you run aws sso login?"; return 1)
+        /usr/local/bin/terraform fmt
+        eval "/usr/local/bin/terraform $*"
+    else
+        echo "Error, please specify variable AWS_PROFILE with a valid profile"
     fi
 }
 
