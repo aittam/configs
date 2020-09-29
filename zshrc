@@ -87,7 +87,7 @@ SAVEHIST=10000000000
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker docker-compose)
+plugins=(git docker docker-compose kubectl kube-ps1)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -116,6 +116,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias d=docker
+alias mypublicip="dig +short myip.opendns.com @resolver1.opendns.com"
 export AWS_SDK_LOAD_CONFIG="true"
 
 function setup_aws_credentials() {
@@ -150,7 +152,7 @@ function setup_aws_credentials_sso() {
     profile_name=$1
     echo $profile_name
     role_name=$(aws configure get sso_role_name --profile $profile_name)
-    region=$(aws configure get region --profile $profile_name)
+    region=$(aws configure get sso_region --profile $profile_name)
     account_id=$(aws configure get sso_account_id --profile $profile_name)
     access_token=$(cat `grep -rl ~/.aws/sso/cache/ -e $sso_start_url` |jq -r .accessToken)
     local stscredentials
@@ -216,3 +218,5 @@ load-tfswitch() {
 }
 add-zsh-hook chpwd load-tfswitch
 load-tfswitch
+
+PS1='$(kube_ps1)'$PS1
