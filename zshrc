@@ -198,7 +198,6 @@ function terraformrolemfa() {
     if [ $(aws configure get role_arn --profile $AWS_PROFILE) ]
     then
         setup_aws_credentials $AWS_PROFILE && echo "MFA ENABLED" || exit
-        /usr/local/bin/terraform init
         /usr/local/bin/terraform fmt
         eval "/usr/local/bin/terraform $*"
     else
