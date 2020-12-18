@@ -219,4 +219,14 @@ load-tfswitch() {
 add-zsh-hook chpwd load-tfswitch
 load-tfswitch
 
+function get_cluster_short() {
+  if [[ $1 == *"arn:aws:eks"* ]]; then
+    echo "$1" | cut -d "/" -f2 | awk '{print "EKS:"$1}'
+  else
+    echo "$1"
+  fi
+}
+
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+
 PS1='$(kube_ps1)'$PS1
