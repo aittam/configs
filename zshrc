@@ -152,7 +152,8 @@ function setup_aws_credentials_sso() {
     profile_name=$1
     echo $profile_name
     role_name=$(aws configure get sso_role_name --profile $profile_name)
-    region=$(aws configure get sso_region --profile $profile_name)
+    region=$(aws configure get region --profile $profile_name)
+    sso_region=$(aws configure get sso_region --profile $profile_name)
     account_id=$(aws configure get sso_account_id --profile $profile_name)
     access_token=$(cat `grep -rl ~/.aws/sso/cache/ -e $sso_start_url` |jq -r .accessToken)
     local stscredentials
@@ -160,7 +161,7 @@ function setup_aws_credentials_sso() {
       --profile $profile_name \
       --role-name $role_name \
       --account-id $account_id \
-      --region $region \
+      --region $sso_region \
       --access-token $access_token)
     credential_res=$?
     AWS_ACCESS_KEY_ID=$(echo "${stscredentials}" | jq -r .roleCredentials.accessKeyId)
