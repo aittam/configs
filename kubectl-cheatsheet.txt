@@ -1,0 +1,12 @@
+# get all pod name in all namespaces
+kgp --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+
+# get all load balancer and their external ip
+kgs --all-namespaces -o jsonpath="{.items[?(@.spec.type==\"LoadBalancer\")]['metadata.name', 'spec.loadBalancerIP']}"
+
+# improved version of the previous command
+kgs --all-namespaces -o jsonpath="{range .items[?(@.spec.type==\"LoadBalancer\")]}{.metadata.namespace}{'\t'}{.metadata.name}{'\t'}{.spec.loadBalancerIP}{'\n'}{end}"
+
+# get all resources installed by a helm chart, replace {{ .Release.Name }} with
+your release name
+kubectl get all,cm,secrets,sa,role,rolebinding,clusterrole,clusterrolebinding,ingress,netpol --all-namespaces -l='app.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance={{ .Release.Name }}'
