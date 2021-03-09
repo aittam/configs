@@ -10,3 +10,6 @@ kgs --all-namespaces -o jsonpath="{range .items[?(@.spec.type==\"LoadBalancer\")
 # get all resources installed by a helm chart, replace {{ .Release.Name }} with
 your release name
 kubectl get all,cm,secrets,sa,role,rolebinding,clusterrole,clusterrolebinding,ingress,netpol --all-namespaces -l='app.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance={{ .Release.Name }}'
+
+# get all pods on a particular node
+kubectl get pods --all-namespaces --field-selector spec.nodeName=ip-172-30-127-110.us-west-2.compute.internal
