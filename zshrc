@@ -205,6 +205,10 @@ function terraformrolemfa() {
     fi
 }
 
+function clearAwsEnv() {
+  unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_DEFAULT_REGION
+}
+
 alias k=kubectl
 source <(kubectl completion zsh)
 echo 'complete -F __start_kubectl k'
