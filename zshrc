@@ -234,3 +234,5 @@ function get_cluster_short() {
 KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
 
 PS1='$(kube_ps1)'$PS1
+
+RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
