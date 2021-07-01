@@ -13,3 +13,6 @@ kubectl get all,cm,secrets,sa,role,rolebinding,clusterrole,clusterrolebinding,in
 
 # get all pods on a particular node
 kubectl get pods --all-namespaces --field-selector spec.nodeName=ip-172-30-127-110.us-west-2.compute.internal
+
+# get all pods in pending state and the creation timestamp
+kgp -o jsonpath='{range .items[?(@.status.phase == "Pending")]}{@.metadata.name} {@.metadata.creationTimestamp}{"\n"}{end}'

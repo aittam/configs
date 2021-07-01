@@ -208,7 +208,7 @@ function terraformrolemfa() {
 }
 
 function clearAwsEnv() {
-  unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_DEFAULT_REGION
+  unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_DEFAULT_REGION AWS_PROFILE
 }
 
 alias k=kubectl
@@ -236,3 +236,5 @@ function get_cluster_short() {
 KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
 
 PS1='$(kube_ps1)'$PS1
+
+RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
