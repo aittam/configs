@@ -16,3 +16,6 @@ kubectl get pods --all-namespaces --field-selector spec.nodeName=ip-172-30-127-1
 
 # get all pods in pending state and the creation timestamp
 kgp -o jsonpath='{range .items[?(@.status.phase == "Pending")]}{@.metadata.name} {@.metadata.creationTimestamp}{"\n"}{end}'
+
+# get all images of a particular namespace
+kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{"  ->  "}{.spec.containers[*].image}{"\n"}{end}'
