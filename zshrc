@@ -8,6 +8,7 @@ else
   export ZSH="/home/mattia/.oh-my-zsh"
 fi
 
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -49,7 +50,7 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -87,7 +88,8 @@ SAVEHIST=10000000000
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker docker-compose kubectl kube-ps1)
+plugins=(git docker docker-compose kubectl kube-ps1 zsh-completions)
+autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
 
