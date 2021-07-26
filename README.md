@@ -8,6 +8,7 @@ Install the zsh completion plugin https://github.com/zsh-users/zsh-completions/#
 ## Utilities on mac
 
 ```
+brew install warrensbox/tap/tfswitch
 brew install kubectx
 brew install kube-ps1
 ```
