@@ -1,0 +1,20 @@
+Show PV occupation
+```
+InsightsMetrics 
+| where Name == "pvUsedBytes"
+| extend d=parse_json(Tags)
+| extend pvcName = tostring(d.pvcName)
+| extend pvcNamespace = tostring(d.pvcNamespace)
+| extend pvCapacityBytes = tostring(d.pvCapacityBytes)
+| extend pvCUsedBytes = todouble(Val)
+| extend ClusterName = trim(@"^.*\/",tostring(d.["container.azm.ms/clusterName"]))
+| extend pvUsedPercent = todouble(Val)*100/todouble(pvCapacityBytes)
+| summarize count_=count() 
+       by ClusterName, 
+          pvcNamespace, 
+          pvcName, 
+          pvCapacityBytes,  
+          pvCUsedBytes, 
+          pvUsedPercent, 
+          bin(TimeGenerated, 30min) 
+```
