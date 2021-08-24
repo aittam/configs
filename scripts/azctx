@@ -1,0 +1,20 @@
+#!/bin/bash
+# Author: Guang Yi Xu
+
+what=$1
+
+if [ "$what" = "update" ]; then
+  az account list -o table > ~/.azctx
+  cat ~/.azctx
+  exit
+fi
+
+if [ "$what" = "" ]; then
+  cat ~/.azctx
+  exit
+fi
+
+# otherwise, set the ctx
+az account set -s $what
+az account list -o table > ~/.azctx
+echo "set to $what"
