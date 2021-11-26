@@ -4,4 +4,11 @@ openssl x509 -in certificate.crt -text -noout
 # print certificate for remote site, i.e. google.com
 echo | openssl s_client -servername google.com -connect google.com:443 2>/dev/null |openssl x509 -text
 
+# get public key info from a certificate
+openssl x509 -in my.crt -pubkey
 
+# get public key from a private key
+openssl ec -in ca.key -pubout
+
+# Check if a certificate and a ca.key match
+openssl s_server -accept 9999 -cert server.crt -key ca.key
